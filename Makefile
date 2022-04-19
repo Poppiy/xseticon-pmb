@@ -15,6 +15,7 @@ BINDIR=$(PREFIX)/bin
 all: xseticon
 
 xseticon.o: xseticon.c
+	./usage.gen.sed README.md >auto-generated/usage.h
 	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $^ -o $@
 
 xseticon: xseticon.o
@@ -26,5 +27,5 @@ clean:
 
 .PHONY: install
 install: xseticon
-	install -d $(BINDIR)
-	install -m 755 xseticon $(BINDIR)
+	install --directory -- $(BINDIR)
+	install -- xseticon $(BINDIR)
