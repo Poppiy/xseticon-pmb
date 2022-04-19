@@ -33,6 +33,25 @@ The major changes I introduced:
 
 
 
+Usage
+-----
+
+```text
+Usage: xseticon-pmb <windowid> <iconfmt> <iconfile>
+
+<windowid>: xterm provides it as $WINDOWID.
+    For other applications, xdotool can find it for you.
+    Decimal (just an integer) or '0x' + hexadecimal.
+
+<iconfmt>: Image format.
+    Currently understands 'png', 'svg' and 'GUESS',
+    the latter meaning to naively guess from <iconfile>.
+
+<iconfile>: Path to an image file.
+```
+
+
+
 <!--#toc stop="scan" -->
 
 
