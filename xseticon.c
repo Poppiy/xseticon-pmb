@@ -161,12 +161,12 @@ int main(int argc, char* argv[])
   if (!display)
     abortprog("XOpenDisplay");
 
-  Window window = Select_Window_Args(display, screen, &(argc), argv);
+  Window window = 0; // :TODO: Use window ID from CLI args
 
   if (!window) {
     if (verbose)
       printf("Selecting window by mouse...\n");
-    window = Select_Window_Mouse(display, screen);
+    window = 0; // Mouse selection feature will be removed anyway
     if (window != None) {
       Window root;
       int dummyi;
