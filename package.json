@@ -1,0 +1,23 @@
+{ "name": "xseticon-pmb",
+  "version": "0.0.1",
+  "description": "Change the window icon of an already-running X11 application. A stripped-down fork of Paul Evans' `xseticon`.",
+  "keywords": [],
+
+  "author": "Paul Evans <leonerd@leonerd.org.uk>",
+  "homepage": "https://github.com/mk-pmb/xseticon-pmb/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/xseticon-pmb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/xseticon-pmb/issues"
+  },
+  "contributors": [
+    "M.K. (https://github.com/mk-pmb)"
+  ],
+
+  "private": true, "license": "GPL-2.0-or-later",
+
+
+  "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
+}
