@@ -7,6 +7,7 @@ function ci_main () {
   local SELFPATH="$(readlink -m -- "$BASH_SOURCE"/..)"
   cd -- "$SELFPATH"/.. || return $?
 
+  local PROG_NAME='xseticon-pmb'
   local APT_PKG=(
     libgd-dev
     libxmu-dev
@@ -14,7 +15,10 @@ function ci_main () {
   vdo sudo apt install "${APT_PKG[@]}" || return $?
   vdo make clean || return $?
   vdo make || return $?
-  vdo which xseticon
+  vdo grep_usage ./"$PROG_NAME".elf || return $?
+  vdo sudo make install || return $?
+  vdo which "$PROG_NAME" || return $?
+  vdo grep_usage "$PROG_NAME" || return $?
 }
 
 
@@ -28,6 +32,9 @@ function vdo () {
   echo
   return "$RV"
 }
+
+
+function grep_usage () { "$@" |& grep -Fe 'Usage:'; }
 
 
 

@@ -11,21 +11,30 @@ LIBS=${GLIB_LIBS} ${XLIB_LIBS} ${GD_LIBS}
 
 PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
+BINNAME=xseticon-pmb
+MAINBFN=xseticon-pmb
 
-all: xseticon
+all: $(MAINBFN).elf
 
-xseticon.o: xseticon.c
+$(MAINBFN).o: $(MAINBFN).c
+	# auto-generate include files:
 	./usage.gen.sed README.md >auto-generated/usage.h
+	# gcc: $@
 	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $^ -o $@
+	# done: $@
+	#
 
-xseticon: xseticon.o
+$(MAINBFN).elf: $(MAINBFN).o
+	# gcc: $@
 	gcc $^ ${LIBS} -o $@
+	# done: $@
+	#
 
 .PHONY: clean
 clean:
-	rm -f xseticon.o xseticon
+	rm --verbose -- auto-generated/*.h *.elf  *.o || true
 
 .PHONY: install
-install: xseticon
-	install --directory -- $(BINDIR)
-	install -- xseticon $(BINDIR)
+install: $(MAINBFN).elf
+	install --directory -- "$(BINDIR)"
+	install --no-target-directory -- $(MAINBFN).elf "$(BINDIR)/$(BINNAME)"
