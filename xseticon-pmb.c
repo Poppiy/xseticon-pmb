@@ -42,8 +42,7 @@ typedef unsigned long int CARD32;
 
 gboolean verbose = FALSE;
 
-void usage(int exitcode)
-{
+void usage(int exitcode) {
   printf(README_USAGE);
   exit(exitcode);
 }
@@ -52,14 +51,12 @@ void usage(int exitcode)
     // (This part is intentionally omitted in the PmB version.)
 // END FROM
 
-void abortprog(gchar* fname)
-{
+void abortprog(gchar* fname) {
   fprintf(stderr, "Aborted at function %s\n", fname);
   exit(1);
 }
 
-void load_icon(gchar* filename, int* ndata, CARD32** data)
-{
+void load_icon(gchar* filename, int* ndata, CARD32** data) {
   /* Note:
    *  dispite the fact this routine specifically loads 32bit data, it needs to
    *  load it into an unsigned long int array, not a guint32 array. The
@@ -123,8 +120,7 @@ void load_icon(gchar* filename, int* ndata, CARD32** data)
   gdImageDestroy(icon);
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   if (argc < 2 ||
       !strcmp(argv[1], "-h") ||
       !strcmp(argv[1], "--help"))
