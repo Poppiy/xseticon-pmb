@@ -58,15 +58,15 @@ void abortprog(gchar* fname)
   exit(1);
 }
 
-/* Note:
- *  dispite the fact this routine specifically loads 32bit data, it needs to
- *  load it into an unsigned long int array, not a guint32 array. The
- *  XChangeProperty() call wants to see a native size array when format == 32,
- *  not necessarily a 32bit one.
- */
-
 void load_icon(gchar* filename, int* ndata, CARD32** data)
 {
+  /* Note:
+   *  dispite the fact this routine specifically loads 32bit data, it needs to
+   *  load it into an unsigned long int array, not a guint32 array. The
+   *  XChangeProperty() call wants to see a native size array when format == 32,
+   *  not necessarily a 32bit one.
+   */
+
   FILE* iconfile = fopen(filename, "r");
 
   if (!iconfile) {
