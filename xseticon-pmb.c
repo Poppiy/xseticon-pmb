@@ -42,19 +42,28 @@ typedef unsigned long int CARD32;
 
 gboolean verbose = FALSE;
 
+
 void usage(int exitcode) {
   printf(README_USAGE);
   exit(exitcode);
 }
 
+
 // FROM programs/xlsfonts/dsimple.c
     // (This part is intentionally omitted in the PmB version.)
 // END FROM
 
-void abortprog(gchar* fname) {
-  fprintf(stderr, "Aborted at function %s\n", fname);
+
+void failed(gchar* msg, ...) {
+  va_list details;
+  va_start(details, msg);
+  fprintf(stderr, "E: Failed to %s", msg);
+  vfprintf(stderr, " ", details);
+  fprintf(stderr, "\n");
+  va_end(details);
   exit(1);
 }
+
 
 void load_icon(gchar* filename, int* ndata, CARD32** data) {
   /* Note:
@@ -65,33 +74,25 @@ void load_icon(gchar* filename, int* ndata, CARD32** data) {
    */
 
   FILE* iconfile = fopen(filename, "r");
-
-  if (!iconfile) {
-    abortprog("fopen()");
-  }
+  if (!iconfile) { failed("open file for reading:", filename); }
 
   gdImagePtr icon = gdImageCreateFromPng(iconfile);
-
   fclose(iconfile);
+  if (!icon) { failed("parse data from icon file", filename); }
 
-  int width, height;
-
-  width = gdImageSX(icon);
-  height = gdImageSY(icon);
-
-  if (verbose)
-    printf("Loaded a %dx%d icon\n", width, height);
+  int width = gdImageSX(icon);
+  int height = gdImageSY(icon);
+  if (verbose) {
+    printf("D: Icon dimensions: %d x %d pixels.\n", width, height);
+  }
 
   (*ndata) = (width * height) + 2;
-
   (*data) = g_new0(CARD32, (*ndata));
-
   int i = 0;
   (*data)[i++] = width;
   (*data)[i++] = height;
 
   int x, y;
-
   for(y = 0; y < height; y++) {
     for(x = 0; x < width; x++) {
       // data is RGBA
@@ -121,28 +122,20 @@ void load_icon(gchar* filename, int* ndata, CARD32** data) {
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 2 ||
-      !strcmp(argv[1], "-h") ||
-      !strcmp(argv[1], "--help"))
-    usage(0);
-
-  if (!argv[1])
-    usage(1);
+  if (argc < 3) { usage(1); }
+  if (!strcmp(argv[1], "-h")) { usage(0); }
+  if (!strcmp(argv[1], "--help")) { usage(0); }
 
   guint argindex = 1;
-  if (!strcmp(argv[argindex], "-v")) {
+  if (!strcmp(argv[argindex], "--verbose")) {
     verbose = TRUE;
     argindex++;
   }
 
   Display* display = XOpenDisplay(NULL);
-
   XSynchronize(display, TRUE);
-
   int screen = DefaultScreen(display);
-
-  if (!display)
-    abortprog("XOpenDisplay");
+  if (!display) { failed("XOpenDisplay"); }
 
   Window window = 0; // :TODO: Use window ID from CLI args
 
@@ -161,31 +154,18 @@ int main(int argc, char* argv[]) {
           window = XmuClientWindow (display, window);
     }
   }
+  if (verbose) { printf("Using window id 0x%08lx\n", window); }
 
-  if (verbose)
-    printf("Have selected window 0x%08lx\n", window);
-
-  Atom property = XInternAtom(display, "_NET_WM_ICON", 0);
-
-  if (!property)
-    abortprog("XInternAtom(property)");
+  Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
+  if (!iconprop) { failed("find XInternAtom _NET_WM_ICON"); }
 
   guint nelements;
-  CARD32* data;
-
-  load_icon(argv[argindex], &nelements, &data);
-
-  int result = XChangeProperty(display, window, property, XA_CARDINAL, 32, PropModeReplace,
-      (gchar*)data, nelements);
-
-  if(!result)
-    abortprog("XChangeProperty");
-
-  result = XFlush(display);
-
-  if(!result)
-    abortprog("XFlush");
-
+  CARD32* icondata;
+  load_icon(argv[argindex], &nelements, &icondata);
+  int result = XChangeProperty(display, window, iconprop,
+    XA_CARDINAL, 32, PropModeReplace, (gchar*)icondata, nelements);
+  if(!result) { failed("XChangeProperty"); }
+  if(!XFlush(display)) { failed("XFlush"); }
   XCloseDisplay(display);
 }
 

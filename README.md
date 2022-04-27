@@ -37,7 +37,7 @@ Usage
 -----
 
 ```text
-Usage: xseticon-pmb <windowid> <iconfmt> <iconfile>
+Usage: xseticon-pmb [--verbose] <windowid> <iconfmt> <iconfile>
 
 <windowid>: xterm provides it as $WINDOWID.
     For other applications, xdotool can find it for you.
