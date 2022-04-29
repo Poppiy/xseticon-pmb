@@ -18,7 +18,7 @@ all: $(MAINBFN).elf
 
 $(MAINBFN).o: $(MAINBFN).c
 	# auto-generate include files:
-	./usage.gen.sed README.md >auto-generated/usage.h
+	./usage.gen.sed ../README.md >auto-generated/usage.h
 	# gcc: $@
 	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $^ -o $@
 	# done: $@
