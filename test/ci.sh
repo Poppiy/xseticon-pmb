@@ -7,34 +7,25 @@ function ci_main () {
   local REPOPATH="$(readlink -m -- "$BASH_SOURCE"/../..)"
   cd -- "$REPOPATH"/src || return $?
 
+  source -- rebuild.sh --lib || return $?
+  rebuild__core || return $?
+
   local PROG_NAME='xseticon-pmb'
-  local APT_PKG=(
-    libgd-dev
-    libxmu-dev
-    )
-  vdo sudo apt install "${APT_PKG[@]}" || return $?
-  vdo make clean || return $?
-  vdo make || return $?
   vdo grep_usage ./"$PROG_NAME".elf || return $?
   vdo sudo make install || return $?
   vdo which "$PROG_NAME" || return $?
   vdo grep_usage "$PROG_NAME" || return $?
-}
 
-
-function vdo () {
-  echo
-  echo "==-----== $* ==-----== start ==-----=="
-  SECONDS=0
-  "$@"
-  local RV=$?
-  echo "==-----== $* ==-----== done, $SECONDS sec, rv=$RV ==-----=="
-  echo
-  return "$RV"
+  echo '+OK CI passed.'
 }
 
 
 function grep_usage () { "$@" |& grep -Fe 'Usage:'; }
+
+
+
+
+
 
 
 
