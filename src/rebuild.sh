@@ -33,7 +33,6 @@ function vdo () {
 function rebuild__maybe_install_libraries () {
   local NEED=(
     libgd-dev
-    libxmu-dev
     )
   local MISS=()
   local PKG=

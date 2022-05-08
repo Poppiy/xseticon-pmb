@@ -27,7 +27,6 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xatom.h>
-#include <X11/Xmu/WinUtil.h>
 
 #include <gd.h>
 
@@ -121,6 +120,14 @@ void load_icon(gchar* filename, int* ndata, CARD32** data) {
   gdImageDestroy(icon);
 }
 
+
+gboolean str2ulong(gchar* s, unsigned long* u) {
+  if (sscanf(s, "0x%lx", u)) { return TRUE; }
+  if (sscanf(s, "%ld", u)) { return TRUE; }
+  return FALSE;
+}
+
+
 int main(int argc, char* argv[]) {
   if (argc < 3) { usage(1); }
   if (!strcmp(argv[1], "-h")) { usage(0); }
@@ -132,29 +139,17 @@ int main(int argc, char* argv[]) {
     argindex++;
   }
 
+  unsigned long tmpLong = 0;
+  if (!str2ulong(argv[argindex], &tmpLong)) { failed("parse window ID"); }
+  Window window = tmpLong;
+  if (window < 1) { failed("invalid window ID, must be positive"); }
+  if (verbose) { printf("D: Using window ID 0x%08lx\n", window); }
+  argindex++;
+
   Display* display = XOpenDisplay(NULL);
   XSynchronize(display, TRUE);
   int screen = DefaultScreen(display);
   if (!display) { failed("XOpenDisplay"); }
-
-  Window window = 0; // :TODO: Use window ID from CLI args
-
-  if (!window) {
-    if (verbose)
-      printf("Selecting window by mouse...\n");
-    window = 0; // Mouse selection feature will be removed anyway
-    if (window != None) {
-      Window root;
-      int dummyi;
-      unsigned int dummy;
-
-      if (XGetGeometry (display, window, &root, &dummyi, &dummyi,
-                        &dummy, &dummy, &dummy, &dummy)
-          && window != root)
-          window = XmuClientWindow (display, window);
-    }
-  }
-  if (verbose) { printf("Using window id 0x%08lx\n", window); }
 
   Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
   if (!iconprop) { failed("find XInternAtom _NET_WM_ICON"); }
@@ -168,4 +163,3 @@ int main(int argc, char* argv[]) {
   if(!XFlush(display)) { failed("XFlush"); }
   XCloseDisplay(display);
 }
-

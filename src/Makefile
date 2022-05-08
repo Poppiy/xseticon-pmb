@@ -3,7 +3,7 @@ GLIB_CFLAGS=$(shell pkg-config --cflags glib-2.0)
 
 XLIB_CFLAGS=-I /usr/X11R6/include
 
-XLIB_LIBS=-L /usr/X11R6/lib -lX11 -lXmu
+XLIB_LIBS=-L /usr/X11R6/lib -lX11
 
 GD_LIBS=-lgd
 
