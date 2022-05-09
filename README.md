@@ -59,7 +59,8 @@ Building
 1.  Recommended build platform is Ubuntu trusty or later.
 1.  Clone the repo.
 1.  In a shell, run `./src/rebuild.sh`
-1.  If you get error messages about lacking libraries,
+1.  If you get error messages about missing libraries
+    (you need [these](deps.libs.apt-pkg.txt),
     install them and retry.
 1.  On success, the script should display where your new binary is.
 

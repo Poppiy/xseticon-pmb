@@ -1,0 +1,6 @@
+# -*- coding: utf-8, tab-width: 2 -*-
+# List of apt package names for libraries that you'll need.
+# Used in `rebuild__maybe_install_libraries` in `rebuild.sh`.
+
+libgd-dev
+libglib2.0-dev

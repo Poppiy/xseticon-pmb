@@ -49,9 +49,9 @@ function vdo () {
 
 
 function rebuild__maybe_install_libraries () {
-  local NEED=(
-    libgd-dev
-    )
+  local NEED=()
+  readarray -t NEED < <(
+    grep -Pe '^\w' -- "$REPOPATH"/src/deps.libs.apt-pkg.txt)
   local MISS=()
   local PKG=
   for PKG in "${NEED[@]}"; do
