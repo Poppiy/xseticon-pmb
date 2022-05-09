@@ -64,7 +64,7 @@ void failed(gchar* msg, ...) {
 }
 
 
-void load_icon(gchar* filename, int* ndata, CARD32** data) {
+void load_png_icon(gchar* filename, guint* ndata, CARD32** data) {
   /* Note:
    *  dispite the fact this routine specifically loads 32bit data, it needs to
    *  load it into an unsigned long int array, not a guint32 array. The
@@ -121,6 +121,15 @@ void load_icon(gchar* filename, int* ndata, CARD32** data) {
 }
 
 
+void load_icon(gchar* imType, gchar* imPath, guint* ndata, CARD32** data) {
+  if (!strcmp(imType, "png")) {
+    load_png_icon(imPath, ndata, data);
+    return;
+  }
+  failed("load image: Unsupported image type:", imType);
+}
+
+
 gboolean str2ulong(gchar* s, unsigned long* u) {
   if (sscanf(s, "0x%lx", u)) { return TRUE; }
   if (sscanf(s, "%ld", u)) { return TRUE; }
@@ -146,17 +155,20 @@ int main(int argc, char* argv[]) {
   if (verbose) { printf("D: Using window ID 0x%08lx\n", window); }
   argindex++;
 
+  gchar* imType = argv[argindex];
+  argindex++;
+  gchar* imPath = argv[argindex];
+  if (verbose) { printf("Loading %s image from file %s\n", imType, imPath); }
+  guint nelements;
+  CARD32* icondata;
+  load_icon(imType, imPath, &nelements, &icondata);
+
   Display* display = XOpenDisplay(NULL);
   XSynchronize(display, TRUE);
   int screen = DefaultScreen(display);
   if (!display) { failed("XOpenDisplay"); }
-
   Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
   if (!iconprop) { failed("find XInternAtom _NET_WM_ICON"); }
-
-  guint nelements;
-  CARD32* icondata;
-  load_icon(argv[argindex], &nelements, &icondata);
   int result = XChangeProperty(display, window, iconprop,
     XA_CARDINAL, 32, PropModeReplace, (gchar*)icondata, nelements);
   if(!result) { failed("XChangeProperty"); }

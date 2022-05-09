@@ -1,5 +1,5 @@
 { "name": "xseticon-pmb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Change the window icon of an already-running X11 application. A stripped-down fork of Paul Evans' `xseticon`.",
   "keywords": [],
 
