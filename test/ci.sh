@@ -15,6 +15,7 @@ function ci_main () {
   vdo env SUDO=sudo make install || return $?
   vdo which "$PROG_NAME" || return $?
   vdo grep_usage "$PROG_NAME" || return $?
+  vdo du --bytes -- *.elf ../bin/* || return $?
 
   echo '+OK CI passed.'
 }

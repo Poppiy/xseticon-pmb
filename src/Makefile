@@ -34,15 +34,16 @@ $(MAINBFN).o: $(MAINBFN).c
 	# done: $@
 	#
 
-$(MAINBFN).elf: $(MAINBFN).o
+$(MAINBFN).debug.elf: $(MAINBFN).o
 	# gcc: $@
 	gcc $< ${LIBS} -o $@
 	# done: $@
 	#
 
-../bin/$(BINNAME): $(MAINBFN).elf
+../bin/$(BINNAME): $(MAINBFN).debug.elf
 	mkdir --verbose --parents -- ../bin
-	mv --verbose --no-target-directory $< $@
+	strip -o $@ -- $<
+	du --bytes -- $< $@
 
 .PHONY: clean
 clean:
