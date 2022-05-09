@@ -74,10 +74,10 @@ image_reader_fun_ptr decide_image_reader(gchar* type, gchar* path) {
 
 void load_icon(gchar* img_type, gchar* img_path, guint* ndata, CARD32** data) {
   /* Note:
-   *  dispite the fact this routine specifically loads 32bit data, it needs to
-   *  load it into an unsigned long int array, not a guint32 array. The
-   *  XChangeProperty() call wants to see a native size array when format == 32,
-   *  not necessarily a 32bit one.
+   *  Despite the fact this routine specifically loads 32bit data, it needs
+   *  to load it into an unsigned long int array, not a guint32 array.
+   *  The XChangeProperty() call wants to see a native size array when
+   *  format == 32, not necessarily a 32bit one.
    */
 
   image_reader_fun_ptr reader = decide_image_reader(img_type, img_path);
