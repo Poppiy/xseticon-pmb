@@ -46,6 +46,7 @@ Usage: xseticon-pmb [--verbose] <windowid> <iconfmt> <iconfile>
 <iconfmt>: Image format.
     Currently understands 'png', 'svg' and 'GUESS',
     the latter meaning to naively guess from <iconfile>.
+    (However, SVG support isn't implemented yet.)
 
 <iconfile>: Path to an image file.
 ```

@@ -38,6 +38,7 @@
  * machines.
  */
 typedef unsigned long int CARD32;
+typedef gdImagePtr (*image_reader_fun_ptr)(FILE*);
 
 gboolean verbose = FALSE;
 
@@ -57,14 +58,28 @@ void failed(gchar* msg, ...) {
   va_list details;
   va_start(details, msg);
   fprintf(stderr, "E: Failed to %s", msg);
-  vfprintf(stderr, " ", details);
+  vfprintf(stderr, " %s", details);
   fprintf(stderr, "\n");
   va_end(details);
   exit(1);
 }
 
 
-void load_png_icon(gchar* filename, guint* ndata, CARD32** data) {
+image_reader_fun_ptr decide_image_reader(gchar* type, gchar* path) {
+  if (!strcmp(type, "GUESS")) {
+    int fext_offset = strlen(path) - 4;
+    if (fext_offset < 0) { failed("find filename extension in path", path); }
+    gchar* fext = path + fext_offset;
+    if ((*fext) != '.') { failed("find filename extension in path", path); }
+    fext += 1;
+    return decide_image_reader(fext, path);
+  }
+  if (!strcmp(type, "png")) { return &gdImageCreateFromPng; }
+  failed("load image: Unsupported image type:", type);
+}
+
+
+void load_icon(gchar* img_type, gchar* img_path, guint* ndata, CARD32** data) {
   /* Note:
    *  dispite the fact this routine specifically loads 32bit data, it needs to
    *  load it into an unsigned long int array, not a guint32 array. The
@@ -72,12 +87,14 @@ void load_png_icon(gchar* filename, guint* ndata, CARD32** data) {
    *  not necessarily a 32bit one.
    */
 
-  FILE* iconfile = fopen(filename, "r");
-  if (!iconfile) { failed("open file for reading:", filename); }
+  image_reader_fun_ptr reader = decide_image_reader(img_type, img_path);
 
-  gdImagePtr icon = gdImageCreateFromPng(iconfile);
+  FILE* iconfile = fopen(img_path, "r");
+  if (!iconfile) { failed("open file for reading:", img_path); }
+
+  gdImagePtr icon = (*reader)(iconfile);
   fclose(iconfile);
-  if (!icon) { failed("parse data from icon file", filename); }
+  if (!icon) { failed("parse data from icon file", img_path); }
 
   int width = gdImageSX(icon);
   int height = gdImageSY(icon);
@@ -118,15 +135,6 @@ void load_png_icon(gchar* filename, guint* ndata, CARD32** data) {
   }
 
   gdImageDestroy(icon);
-}
-
-
-void load_icon(gchar* imType, gchar* imPath, guint* ndata, CARD32** data) {
-  if (!strcmp(imType, "png")) {
-    load_png_icon(imPath, ndata, data);
-    return;
-  }
-  failed("load image: Unsupported image type:", imType);
 }
 
 
