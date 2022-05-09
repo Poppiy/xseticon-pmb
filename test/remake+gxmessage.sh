@@ -22,7 +22,7 @@ function remake () {
 
   local XSI=(
     vdo
-    ./xseticon-pmb.elf
+    "$REPOPATH"/bin/xseticon-pmb
     --verbose
     "$WIN_ID"
     png
@@ -34,7 +34,7 @@ function remake () {
   local ICON=
   for ICON in "${ICON_FILES[@]}"; do
     "${XSI[@]}" "$ICONS_PATH/$ICON" || return $?
-    sleep 1s
+    sleep 0.5s
   done
 }
 

@@ -11,8 +11,8 @@ function ci_main () {
   rebuild__core || return $?
 
   local PROG_NAME='xseticon-pmb'
-  vdo grep_usage ./"$PROG_NAME".elf || return $?
-  vdo sudo make install || return $?
+  vdo grep_usage ../bin/"$PROG_NAME" || return $?
+  vdo env SUDO=sudo make install || return $?
   vdo which "$PROG_NAME" || return $?
   vdo grep_usage "$PROG_NAME" || return $?
 

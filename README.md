@@ -52,7 +52,16 @@ Usage: xseticon-pmb [--verbose] <windowid> <iconfmt> <iconfile>
 
 
 
-<!--#toc stop="scan" -->
+Building
+--------
+
+1.  Recommended build platform is Ubuntu trusty or later.
+1.  Clone the repo.
+1.  In a shell, run `./src/rebuild.sh`
+1.  If you get error messages about lacking libraries,
+    install them and retry.
+1.  On success, the script should display where your new binary is.
+
 
 
 
@@ -63,6 +72,9 @@ Known issues
 
 
 
+
+
+<!--#toc stop="scan" -->
 
 &nbsp;
 

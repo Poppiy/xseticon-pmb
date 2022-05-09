@@ -9,32 +9,58 @@ GD_LIBS=-lgd
 
 LIBS=${GLIB_LIBS} ${XLIB_LIBS} ${GD_LIBS}
 
-PREFIX=/usr/local
-BINDIR=$(PREFIX)/bin
-BINNAME=xseticon-pmb
-MAINBFN=xseticon-pmb
+PREFIX  = /usr/local
+BINDIR  = $(PREFIX)/bin
+BINNAME = xseticon-pmb
+MAINBFN = $(BINNAME)
 
-all: $(MAINBFN).elf
+define CLEANUP_FILES
+    auto-generated/*.h
+    ../bin/$(BINNAME)
+    *.elf
+    *.o
+endef
+CLEANUP_FILES_SPACED = $(strip $(shell \
+    echo "$(CLEANUP_FILES)" | tr -s '\n ' ' '))
+
+
+all: ../bin/$(BINNAME)
 
 $(MAINBFN).o: $(MAINBFN).c
 	# auto-generate include files:
 	./usage.gen.sed ../README.md >auto-generated/usage.h
 	# gcc: $@
-	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $^ -o $@
+	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $< -o $@
 	# done: $@
 	#
 
 $(MAINBFN).elf: $(MAINBFN).o
 	# gcc: $@
-	gcc $^ ${LIBS} -o $@
+	gcc $< ${LIBS} -o $@
 	# done: $@
 	#
 
+../bin/$(BINNAME): $(MAINBFN).elf
+	mkdir --verbose --parents -- ../bin
+	mv --verbose --no-target-directory $< $@
+
 .PHONY: clean
 clean:
-	rm --verbose -- auto-generated/*.h *.elf  *.o || true
+	chmod --changes u+w -- $(CLEANUP_FILES_SPACED) || true
+	rm --verbose -- $(CLEANUP_FILES_SPACED) || true
 
 .PHONY: install
-install: $(MAINBFN).elf
-	install --directory -- "$(BINDIR)"
-	install --no-target-directory -- $(MAINBFN).elf "$(BINDIR)/$(BINNAME)"
+install: ../bin/$(BINNAME)
+	$(SUDO) install --directory -- "$(BINDIR)"
+	$(SUDO) install --no-target-directory -- $< "$(BINDIR)/$(BINNAME)"
+
+
+
+
+
+
+
+
+
+
+# scroll

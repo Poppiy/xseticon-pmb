@@ -6,7 +6,7 @@ function rebuild__cli_main () {
   export LANG{,UAGE}=en_US.UTF-8  # make error messages search engine-friendly
   local REPOPATH="$(readlink -m -- "$BASH_SOURCE"/../..)"
   cd -- "$REPOPATH"/src || return $?
-  local TASK="${1:-core}"; shift
+  local TASK="${1:-and_show}"; shift
   rebuild__"$TASK" "$@" || return $?
 }
 
@@ -15,6 +15,24 @@ function rebuild__core () {
   rebuild__maybe_install_libraries || return $?
   vdo make clean || return $?
   vdo make || return $?
+}
+
+
+function rebuild__and_show () {
+  rebuild__core || return $?
+  cd .. || return $?
+  echo 'These are your freshly baked new executables:'
+  local LS=(
+    ls
+    --format=long
+    --time-style=long-iso
+    --sort=time
+    --color=always
+    --
+    bin/*
+    )
+  "${LS[@]}" || return $?
+  echo
 }
 
 
