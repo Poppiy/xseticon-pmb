@@ -196,8 +196,14 @@ int main(int argc, char* argv[]) {
   if (!display) { failed("XOpenDisplay"); }
   Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
   if (!iconprop) { failed("find XInternAtom _NET_WM_ICON"); }
+
   int result = XChangeProperty(display, window, iconprop,
-    XA_CARDINAL, 32, PropModeReplace, (uchar*)icondata, nelements);
+    XA_CARDINAL, // Atom type
+    32, // int format
+    PropModeReplace, // int mode
+    (uchar*)icondata, // unsigned char *data,
+    nelements);
+
   if(!result) { failed("XChangeProperty"); }
   if(!XFlush(display)) { failed("XFlush"); }
   XCloseDisplay(display);
