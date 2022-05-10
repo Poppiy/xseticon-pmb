@@ -38,6 +38,7 @@ typedef unsigned long int CARD32;
 */
 
 typedef gdImagePtr (*image_reader_fun_ptr)(FILE*);
+typedef unsigned char uchar;
 
 gboolean verbose = FALSE;
 
@@ -75,6 +76,7 @@ image_reader_fun_ptr decide_image_reader(gchar* type, gchar* path) {
   }
   if (!strcmp(type, "png")) { return &gdImageCreateFromPng; }
   failed("load image: Unsupported image type:", type);
+  return NULL; // Won't ever be reached. Just to mute the warning.
 }
 
 
@@ -172,13 +174,13 @@ int main(int argc, char* argv[]) {
 
   Display* display = XOpenDisplay(NULL);
   XSynchronize(display, TRUE);
-  int screen = DefaultScreen(display);
   if (!display) { failed("XOpenDisplay"); }
   Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
   if (!iconprop) { failed("find XInternAtom _NET_WM_ICON"); }
   int result = XChangeProperty(display, window, iconprop,
-    XA_CARDINAL, 32, PropModeReplace, (gchar*)icondata, nelements);
+    XA_CARDINAL, 32, PropModeReplace, (uchar*)icondata, nelements);
   if(!result) { failed("XChangeProperty"); }
   if(!XFlush(display)) { failed("XFlush"); }
   XCloseDisplay(display);
+  return 0;
 }
