@@ -14,7 +14,18 @@ function rebuild__cli_main () {
 function rebuild__core () {
   rebuild__maybe_install_libraries || return $?
   vdo make clean || return $?
-  vdo make || return $?
+  vteelog tmp.make.log make || return $?
+}
+
+
+function vteelog () {
+  local LOG_FN="$1"; shift
+  local RV=
+  vdo "$@" >& >(tee -- "$LOG_FN")
+  RV=$?
+  sleep 0.2s # wait for the tee subprocess to finish writing its output.
+  [ "$RV" == 0 ] || echo "E: '$1' failed. Errors were logged to $LOG_FN." >&2
+  return "$RV"
 }
 
 

@@ -1,6 +1,8 @@
 GLIB_CFLAGS=$(shell pkg-config --cflags glib-2.0)
   GLIB_LIBS=$(shell pkg-config --libs   glib-2.0)
 
+GCC_OPT=-O2 -Wall -Werror
+
 XLIB_CFLAGS=-I /usr/X11R6/include
 XLIB_LIBS=-L /usr/X11R6/lib -lX11
 
@@ -29,7 +31,7 @@ $(MAINBFN).o: $(MAINBFN).c
 	# auto-generate include files:
 	./usage.gen.sed ../README.md >auto-generated/usage.h
 	# gcc: $@
-	gcc $(GLIB_CFLAGS) $(XLIB_CFLAGS) -c $< -o $@
+	gcc $(GLIB_CFLAGS) $(XLIB_CFLAGS) $(GCC_OPT) -c $< -o $@
 	# done: $@
 	#
 

@@ -1,4 +1,8 @@
 
+# Temporary files
+/tmp.*
+
+
 # Binaries
 /*.elf
 /*.o
