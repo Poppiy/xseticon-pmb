@@ -80,6 +80,15 @@ image_reader_fun_ptr decide_image_reader(gchar* type, gchar* path) {
 }
 
 
+void dump_hex(const uchar* bytes, const uchar offset, const uchar length) {
+  uchar end = offset + length;
+  uchar pos;
+  for(pos = offset; pos < end; pos++) {
+    printf(" %02X", bytes[pos]);
+  }
+}
+
+
 void load_icon(gchar* img_type, gchar* img_path, guint* ndata, CARD32** data) {
   /* Note:
    *  Despite the fact this routine specifically loads 32bit data, it needs
@@ -105,9 +114,19 @@ void load_icon(gchar* img_type, gchar* img_path, guint* ndata, CARD32** data) {
 
   (*ndata) = (width * height) + 2;
   (*data) = g_new0(CARD32, (*ndata));
+  uchar* bytes = (uchar*)(*data);
+
   int i = 0;
   (*data)[i++] = width;
   (*data)[i++] = height;
+
+  if (verbose) {
+    printf("D: width  bytes:");
+    dump_hex(bytes, 0, 4);
+    printf(" × height bytes:");
+    dump_hex(bytes, 4, 4);
+    printf("\n");
+  }
 
   int x, y;
   for(y = 0; y < height; y++) {
