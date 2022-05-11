@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
   CARD32* icondata;
   load_icon(imType, imPath, &nelements, &icondata);
 
-  Display* display = XOpenDisplay(NULL);
+  Display* display = XOpenDisplay(NULL); // NULL = use $DISPLAY env var
   XSynchronize(display, TRUE);
   if (!display) { failed("XOpenDisplay"); }
   Atom iconprop = XInternAtom(display, "_NET_WM_ICON", 0);
