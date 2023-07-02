@@ -120,14 +120,6 @@ void load_icon(gchar* img_type, gchar* img_path, guint* ndata, CARD32** data) {
   (*data)[i++] = width;
   (*data)[i++] = height;
 
-  if (verbose) {
-    printf("D: width  bytes:");
-    dump_hex(bytes, 0, 4);
-    printf(" × height bytes:");
-    dump_hex(bytes, 4, 4);
-    printf("\n");
-  }
-
   int x, y;
   for(y = 0; y < height; y++) {
     for(x = 0; x < width; x++) {
