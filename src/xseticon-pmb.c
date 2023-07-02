@@ -206,6 +206,7 @@ int main(int argc, char* argv[]) {
 
   if(!result) { failed("XChangeProperty"); }
   if(!XFlush(display)) { failed("XFlush"); }
+  XSynchronize(display, FALSE);
   XCloseDisplay(display);
   return 0;
 }
