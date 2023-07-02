@@ -27,7 +27,7 @@ The major changes I introduced:
 * Omit window ID detection code.
   That part is suffficiently solved by `xdotool`.
   * This also saves me from any doubt about whether these parts of the
-    code are tainted potential xlsfonts license issues.
+    code are tainted by potential xlsfonts license issues.
   * Omitting the mouse aiming code allows to drop the dependency on
     `libxmu-dev`.
 
